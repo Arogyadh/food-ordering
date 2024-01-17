@@ -1,0 +1,429 @@
+1.  app/register/page.js
+section>style>form>make a onSumbit function  handleFormSubmit(), use fetch inside the function
+that makes a request to /api/register. We send the form data as body as Json format. Now go to step 2
+
+``````````````````````
+  async function handleFormSubmit(ev) {
+    ev.preventDefault();
+    setCreatingUser(true);
+    setError(false);
+    setUserCreated(false);
+
+    const response = await fetch("/api/register", {
+      method: "POST",
+      body: JSON.stringify({ email, password }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    console.log(response);
+    if (response.ok) {
+      setUserCreated(true);
+    } else {
+      setError(true);
+    }
+
+    setCreatingUser(false);
+  }
+````````````````
+2.  Create app/api/register/route.js
+
+``````````````````
+import mongoose from "mongoose";
+import User from "@/models/User";
+
+export async function POST(req) {
+  const body = await req.json();
+  mongoose.connect(process.env.MONGO_URL);
+  const createdUser = await User.create(body);
+  return Response.json(createdUser);
+}
+`````````````````
+Here we use get the body as req.json file & use mongoose to connect to the mongo database using mongoose.connect(process.env.MONGO_URL),
+then we create a new user using User schema provided at src/models/User.js
+`````````````````
+import mongoose, { Schema, model } from "mongoose";
+import bcrypt from "bcrypt";
+
+const UserSchema = new Schema(
+  {
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    password: {
+      type: String,
+      required: true,
+      validate: (pass) => {
+        if (!pass || pass.length < 6) {
+          throw new Error("Password must be at least 6 characters long");
+        }
+      },
+    },
+  },
+  { timestamps: true }
+);
+
+UserSchema.post("validate", function (user) {
+  const notHashedPassword = user.password;
+  const salt = 10;
+  user.password = bcrypt.hashSync(notHashedPassword, salt);
+});
+const User = mongoose.models?.User || model("User", UserSchema);
+
+export default User;
+````````````````
+we define a User Scema using new Schema and provide what the key values should look like.
+
+then we export the User as default export & finally use it to create the user object & then return the response
+as Response.json(createdUser).
+
+
+
+3. Now for the login page create src/app/api/auth/[...nextauth]/route.js
+
+
+```````````````````
+import mongoose from "mongoose";
+import User from "@/models/User";
+import NextAuth from "next-auth";
+import CredentialsProvider from "next-auth/providers/credentials";
+import bcrypt from "bcrypt";
+import GoogleProvider from "next-auth/providers/google";
+import { MongoDBAdapter } from "@auth/mongodb-adapter";
+import clientPromise from "@/libs/mongoConnect";
+
+const handler = NextAuth({
+  adapter: MongoDBAdapter(clientPromise),
+  secret: process.env.SECRET,
+  providers: [
+    CredentialsProvider({
+      name: "Credentials",
+      id: "credentials",
+
+      credentials: {
+        email: {
+          label: "Email",
+          type: "email",
+          placeholder: "test@example.com",
+        },
+        password: { label: "Password", type: "password" },
+      },
+      async authorize(credentials, req) {
+        const email = credentials?.email;
+        const password = credentials?.password;
+
+        mongoose.connect(process.env.MONGO_URL);
+        const user = await User.findOne({ email });
+        const passwordOk = user && bcrypt.compareSync(password, user.password);
+        if (passwordOk) {
+          return user;
+        }
+        // Return null if user data could not be retrieved
+        return null;
+      },
+    }),
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    }),
+  ],
+});
+
+export { handler as GET, handler as POST };
+
+`````````````````````
+
+
+we copy pasta this from auth.js documents and  under authorize we get req where
+we extract email and password from it and use them to findOne that matches the user, if it matches we return the user.
+
+
+4. make a login page where we will send request from ,to this nextauth using signIn function as given in nextauth.
+Here we use credentials provider.
+/src/app/login/page.js
+
+  async function handleFormSubmit(ev) {
+    ev.preventDefault();
+    setLoginInProgress(true);
+    await signIn("credentials", { email, password, callbackUrl: "/" });
+    setLoginInProgress(false);
+  }
+
+from the handleFromSubmit function we use signIn and use the credentials provider with email and password given to it.
+
+
+  5. Lastly we want to use session so we make a new component AppContext.js under components:
+``````````
+  "use client";
+import { SessionProvider } from "next-auth/react";
+
+export function AppProvider({ children }) {
+  return <SessionProvider>{children}</SessionProvider>;
+}
+``````````````
+
+we pass all the children to it and return a wrapper (SessionProvider) and render all children within it.
+
+finally we wrap this AppContext on the RootLayout as :
+````````````````
+export default function RootLayout({ children }) {
+  return (
+    <html lang="en">
+      <body className={roboto.className}>
+        <main className="max-w-4xl mx-auto p-4">
+          <AppProvider>
+            <Header />
+            {children}
+            <footer className="border-t p-8  text-center text-gray-500 mt-16">
+              &copy; 2024 All Rights Reserved
+            </footer>
+          </AppProvider>
+        </main>
+      </body>
+    </html>
+  );
+}
+`````````````````````````
+and this is it for how to auth for noobs.
+
+
+
+
+!!!!!!!!!!!!!!!!!!!!!!!~~~~~~~~~~~~~~~~~~~~~~~~!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+This is from gpt :
+
+
+
+1. Register Page (app/register/page.js)
+Create a registration page that includes a form. The form should have an onSubmit function called handleFormSubmit which uses the fetch API to send a POST request to the /api/register endpoint. The form data is serialized as JSON and sent in the request body.
+
+
+// app/register/page.js
+
+import React, { useState } from 'react';
+
+async function handleFormSubmit(ev) {
+  ev.preventDefault();
+  setCreatingUser(true);
+  setError(false);
+  setUserCreated(false);
+
+  try {
+    const response = await fetch("/api/register", {
+      method: "POST",
+      body: JSON.stringify({ email, password }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (response.ok) {
+      setUserCreated(true);
+    } else {
+      setError(true);
+    }
+  } catch (error) {
+    console.error("Error during registration:", error);
+    setError(true);
+  }
+
+  setCreatingUser(false);
+}
+
+function RegisterPage() {
+  // ... (include form elements and state variables)
+  return (
+    <form onSubmit={handleFormSubmit}>
+      {/* ... form inputs */}
+      <button type="submit">Register</button>
+    </form>
+  );
+}
+
+export default RegisterPage;
+2. API Route for Registration (app/api/register/route.js)
+Create an API route to handle the registration. Use Mongoose to connect to the MongoDB database, validate the incoming data, and create a new user using the User model.
+
+
+// app/api/register/route.js
+
+import mongoose from "mongoose";
+import User from "@/models/User";
+
+export async function POST(req, res) {
+  try {
+    await mongoose.connect(process.env.MONGO_URL);
+    const body = await req.json();
+    const createdUser = await User.create(body);
+    res.json(createdUser);
+  } catch (error) {
+    console.error("Error during registration:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+}
+3. User Model (src/models/User.js)
+Define the User schema using Mongoose, including validation and password hashing.
+
+
+// src/models/User.js
+
+import mongoose, { Schema, model } from "mongoose";
+import bcrypt from "bcrypt";
+
+const UserSchema = new Schema(
+  {
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    password: {
+      type: String,
+      required: true,
+      validate: (pass) => {
+        if (!pass || pass.length < 6) {
+          throw new Error("Password must be at least 6 characters long");
+        }
+      },
+    },
+  },
+  { timestamps: true }
+);
+
+UserSchema.post("validate", function (user) {
+  const notHashedPassword = user.password;
+  const salt = 10;
+  user.password = bcrypt.hashSync(notHashedPassword, salt);
+});
+
+const User = mongoose.models?.User || model("User", UserSchema);
+
+export default User;
+4. NextAuth.js Configuration for Login (src/app/api/auth/[...nextauth]/route.js)
+Configure NextAuth.js for handling user authentication. Use the CredentialsProvider to validate email and password against the user stored in the MongoDB database.
+
+
+// src/app/api/auth/[...nextauth]/route.js
+
+import mongoose from "mongoose";
+import User from "@/models/User";
+import NextAuth from "next-auth";
+import CredentialsProvider from "next-auth/providers/credentials";
+import bcrypt from "bcrypt";
+import { MongoDBAdapter } from "@auth/mongodb-adapter";
+import clientPromise from "@/libs/mongoConnect";
+
+const handler = NextAuth({
+  adapter: MongoDBAdapter(clientPromise),
+  secret: process.env.SECRET,
+  providers: [
+    CredentialsProvider({
+      name: "Credentials",
+      id: "credentials",
+      credentials: {
+        email: { label: "Email", type: "email", placeholder: "test@example.com" },
+        password: { label: "Password", type: "password" },
+      },
+      async authorize(credentials, req) {
+        try {
+          const email = credentials?.email;
+          const password = credentials?.password;
+
+          await mongoose.connect(process.env.MONGO_URL);
+          const user = await User.findOne({ email });
+          const passwordOk = user && bcrypt.compareSync(password, user.password);
+
+          if (passwordOk) {
+            return Promise.resolve(user);
+          }
+          return Promise.resolve(null);
+        } catch (error) {
+          console.error("Error during login:", error);
+          return Promise.resolve(null);
+        }
+      },
+    }),
+  ],
+});
+
+export { handler as GET, handler as POST };
+5. Login Page (src/app/login/page.js)
+Create a login page that uses the signIn function from NextAuth.js. This function sends a request to the NextAuth.js authentication endpoint with the provided credentials.
+
+
+// src/app/login/page.js
+
+import React, { useState } from 'react';
+import { signIn } from 'next-auth/react';
+
+async function handleFormSubmit(ev) {
+  ev.preventDefault();
+  setLoginInProgress(true);
+
+  try {
+    await signIn("credentials", { email, password, callbackUrl: "/" });
+  } catch (error) {
+    console.error("Error during login:", error);
+    // Handle login error
+  }
+
+  setLoginInProgress(false);
+}
+
+function LoginPage() {
+  // ... (include form elements and state variables)
+  return (
+    <form onSubmit={handleFormSubmit}>
+      {/* ... form inputs */}
+      <button type="submit">Login</button>
+    </form>
+  );
+}
+
+export default LoginPage;
+6. Session Management (components/AppContext.js)
+Create a session provider to wrap your components in a session context.
+
+
+// components/AppContext.js
+
+import { SessionProvider } from "next-auth/react";
+
+export function AppProvider({ children }) {
+  return <SessionProvider>{children}</SessionProvider>;
+}
+7. Root Layout (RootLayout.js)
+Wrap your entire application with the AppProvider to enable session management.
+
+
+// RootLayout.js
+
+import React from 'react';
+import { AppProvider } from 'components/AppContext';
+
+export default function RootLayout({ children }) {
+  return (
+    <html lang="en">
+      <body className={roboto.className}>
+        <main className="max-w-4xl mx-auto p-4">
+          <AppProvider>
+            <Header />
+            {children}
+            <footer className="border-t p-8 text-center text-gray-500 mt-16">
+              &copy; 2024 All Rights Reserved
+            </footer>
+          </AppProvider>
+        </main>
+      </body>
+    </html>
+  );
+}
+This more detailed documentation provides clearer explanations and includes error handling for better robustness. Ensure to adapt these examples to your specific use case and follow best practices for security and maintainability.
+
+
+
+
+
