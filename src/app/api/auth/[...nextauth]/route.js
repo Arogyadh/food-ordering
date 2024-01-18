@@ -8,9 +8,22 @@ import { MongoDBAdapter } from "@auth/mongodb-adapter";
 import clientPromise from "@/libs/mongoConnect";
 
 const handler = NextAuth({
-  adapter: MongoDBAdapter(clientPromise),
   secret: process.env.SECRET,
+  session: {
+    strategy: "jwt",
+  },
+  adapter: MongoDBAdapter(clientPromise),
+  callbacks: {
+    async session(session, user) {
+      console.log("Session created:", session);
+      return session;
+    },
+  },
   providers: [
+    GoogleProvider({
+      clientId: process.env.GOOGLE_ID,
+      clientSecret: process.env.GOOGLE_SECRET,
+    }),
     CredentialsProvider({
       name: "Credentials",
       id: "credentials",
@@ -36,10 +49,6 @@ const handler = NextAuth({
         // Return null if user data could not be retrieved
         return null;
       },
-    }),
-    GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     }),
   ],
 });
