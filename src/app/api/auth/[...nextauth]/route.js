@@ -9,9 +9,7 @@ import clientPromise from "@/libs/mongoConnect";
 
 const handler = NextAuth({
   secret: process.env.SECRET,
-  session: {
-    strategy: "jwt",
-  },
+
   adapter: MongoDBAdapter(clientPromise),
   callbacks: {
     async session(session, user) {
