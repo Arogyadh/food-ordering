@@ -3,6 +3,7 @@ import bcrypt from "bcrypt";
 
 const UserSchema = new Schema(
   {
+    name: { type: String, default: "" },
     email: {
       type: String,
       required: true,

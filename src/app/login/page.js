@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { signIn } from "next-auth/react";
+import { Nanum_Myeongjo } from "next/font/google";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -13,7 +14,11 @@ export default function LoginPage() {
   async function handleFormSubmit(ev) {
     ev.preventDefault();
     setLoginInProgress(true);
-    await signIn("credentials", { email, password, callbackUrl: "/" });
+    await signIn("credentials", {
+      email,
+      password,
+      callbackUrl: "/",
+    });
     setLoginInProgress(false);
   }
 

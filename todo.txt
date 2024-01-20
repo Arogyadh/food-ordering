@@ -1,0 +1,1 @@
+1. make credentials provider work with mongodb adapter : https://nneko.branche.online/next-auth-credentials-provider-with-the-database-session-strategy/
