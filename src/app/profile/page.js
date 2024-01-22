@@ -10,11 +10,13 @@ export default function ProfilePage() {
   const [username, setUsername] = useState("");
   const [saved, setSaved] = useState(false);
   const [isSaving, setisSaving] = useState(false);
+  const [image, setImage] = useState("");
   const status = session.status;
 
   useEffect(() => {
     if (status === "authenticated") {
       setUsername(session.data.user.name);
+      setImage(session.data.user.image);
     }
   }, [status, session]);
 
@@ -24,7 +26,7 @@ export default function ProfilePage() {
     const response = await fetch("/api/profile", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name: username }),
+      body: JSON.stringify({ name: username, image: image }),
     });
     setisSaving(false);
     if (response.ok) {
@@ -42,6 +44,8 @@ export default function ProfilePage() {
           method: "POST",
           body: data,
         });
+        const link = await response.json();
+        setImage(link);
 
         if (response.ok) {
           console.log("File uploaded successfully");
@@ -60,7 +64,6 @@ export default function ProfilePage() {
   if (status === "unauthenticated") {
     return redirect("/login");
   }
-  const userImage = session.data.user.image;
 
   return (
     <section className="mt-8">
@@ -78,14 +81,17 @@ export default function ProfilePage() {
         )}
         <div className="flex gap-4 items-center">
           <div>
-            <div className=" rounded-md relative">
-              <Image
-                className="rounded-md w-full h-full mb-2"
-                src={userImage}
-                alt="profile picture"
-                width={250}
-                height={250}
-              />
+            <div className=" rounded-md relative max-w-[100px]">
+              {image && (
+                <Image
+                  className="rounded-md w-full h-full mb-2"
+                  src={image}
+                  alt="profile picture"
+                  width={250}
+                  height={250}
+                />
+              )}
+
               <label>
                 <input
                   type="file"
@@ -108,7 +114,7 @@ export default function ProfilePage() {
               onChange={(ev) => setUsername(ev.target.value)}
             />
             <input type="text" value={session.data.user.email} disabled />
-            <button type="submit">Submit</button>
+            <button type="submit">Save</button>
           </form>
         </div>
       </div>

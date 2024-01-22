@@ -9,16 +9,17 @@ export async function PUT(req) {
   const data = await req.json();
   const session = await getServerSession(authOptions);
   const email = session.user.email;
-  console.log({ email, data });
 
+  const update = {};
   if ("name" in data) {
-    //update name by new name
+    update.name = data.name;
+  }
+  if ("image" in data) {
+    update.image = data.image;
+  }
 
-    await User.updateOne(
-      { email: email },
-      { $set: { name: data.name } },
-      { runValidators: false }
-    );
+  if (Object.keys(update).length > 0) {
+    await User.updateOne({ email: email }, update, { runValidators: false });
   }
 
   return Response.json(true);
