@@ -88,6 +88,7 @@ export const authOptions = {
       return session;
     },
   },
+
   providers: [
     CredentialsProvider({
       name: "Credentials",

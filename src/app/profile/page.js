@@ -31,6 +31,28 @@ export default function ProfilePage() {
       setSaved(true);
     }
   }
+  async function handleFileChange(ev) {
+    const files = ev?.target?.files;
+    if (files?.length === 1) {
+      const data = new FormData();
+      data.set("file", files[0]);
+
+      try {
+        const response = await fetch("/api/upload", {
+          method: "POST",
+          body: data,
+        });
+
+        if (response.ok) {
+          console.log("File uploaded successfully");
+        } else {
+          console.error("File upload failed");
+        }
+      } catch (error) {
+        console.error("Error during file upload:", error);
+      }
+    }
+  }
 
   if (status === "loading") {
     return "Loading...";
@@ -64,8 +86,17 @@ export default function ProfilePage() {
                 width={250}
                 height={250}
               />
-
-              <button type="button">Edit</button>
+              <label>
+                <input
+                  type="file"
+                  className="hidden"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                />
+                <span className="block border border-gray-300 cursor-pointer hover:bg-gray-200 text-center rounded-lg p-2">
+                  Edit
+                </span>
+              </label>
             </div>
           </div>
           <form className="grow" onSubmit={handleProfileInfoUpdate}>

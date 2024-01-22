@@ -1,1 +1,10 @@
 1. make credentials provider work with mongodb adapter : https://nneko.branche.online/next-auth-credentials-provider-with-the-database-session-strategy/
+-> fix ; 
+session: { // Set it as jwt instead of database strategy: "jwt", },
+
+as note that if you want to persist the credentials session, you need to set session.strategy as 'jwt'. Credentials provider does not persist the session in the database.
+
+The Credentials provider can only be used if JSON Web Tokens are enabled for sessions. Users authenticated with the Credentials provider are not persisted in the database. https://next-auth.js.org/configuration/providers/credentials
+
+
+using this will make credentials work but session will not persist , so google provider is not working, need fixes ...
