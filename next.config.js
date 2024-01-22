@@ -8,7 +8,7 @@ const nextConfig = {
       },
       {
         protocol: "https",
-        hostname: "arogya-ordering.s3.amazonaws.com",
+        hostname: "arogya-food-ordering.s3.amazonaws.com",
       },
     ],
   },
