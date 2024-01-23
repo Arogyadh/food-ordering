@@ -19,6 +19,11 @@ const UserSchema = new Schema(
       },
     },
     image: { type: String },
+    phone: { type: Number, default: "" },
+    streetAddress: { type: String, default: "" },
+    city: { type: String, default: "" },
+    zip: { type: String, default: "" },
+    country: { type: String, default: "" },
   },
   { timestamps: true }
 );

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { Nanum_Myeongjo } from "next/font/google";
+import { toast } from "react-hot-toast";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -19,6 +20,7 @@ export default function LoginPage() {
       password,
       callbackUrl: "/",
     });
+    toast("Welcome");
     setLoginInProgress(false);
   }
 

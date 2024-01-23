@@ -27,7 +27,6 @@ const Hero = () => {
           </button>
         </div>
       </div>
-
       <div className="relative">
         <Image
           src={"/pizza.jpg"}

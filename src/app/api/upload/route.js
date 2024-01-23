@@ -16,7 +16,7 @@ export async function POST(req) {
     const ext = file.name.split(".").slice(-1)[0];
 
     const newFileName = uniqid() + "." + ext;
-    const bucketName = "arogya-food-ordering";
+    const bucketName = "arogya-ordering";
     // An array to store file chunks
     const chunks = [];
     // Iterate over each chunk of the file's stream
