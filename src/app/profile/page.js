@@ -1,10 +1,12 @@
 "use client";
-import { set } from "mongoose";
+
 import { useSession } from "next-auth/react";
 import Image from "next/image";
+
 import { redirect } from "next/navigation";
 import { use, useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
+import UserTabs from "@/components/layout/UserTabs";
 
 export default function ProfilePage() {
   const session = useSession();
@@ -15,6 +17,8 @@ export default function ProfilePage() {
   const [city, setCity] = useState("");
   const [country, setCountry] = useState("");
   const [zip, setZip] = useState("");
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [profileFetched, setProfileFetched] = useState(false);
 
   const status = session.status;
 
@@ -27,6 +31,8 @@ export default function ProfilePage() {
       setCity(session.data.user.city);
       setCountry(session.data.user.country);
       setZip(session.data.user.zip);
+      setIsAdmin(session.data.user.admin);
+      setProfileFetched(true);
     }
   }, [status, session]);
 
@@ -89,7 +95,7 @@ export default function ProfilePage() {
     }
   }
 
-  if (status === "loading") {
+  if (status === "loading" || profileFetched === false) {
     return "Loading...";
   }
   if (status === "unauthenticated") {
@@ -98,7 +104,8 @@ export default function ProfilePage() {
 
   return (
     <section className="mt-8">
-      <h1 className="mt-8 text-center text-primary text-4xl mb-5">Profile</h1>
+      <UserTabs isAdmin={isAdmin} />
+
       <div className="max-w-md mx-auto">
         <div className="flex gap-4">
           <div>

@@ -37,3 +37,11 @@ button[type="submit"]:disabled,
 .submit:disabled {
   @apply bg-gray-300 cursor-not-allowed;
 }
+
+div.tabs > * {
+  @apply bg-gray-300 text-gray-700 px-4 py-2 rounded-full;
+}
+
+div.tabs > *.active {
+  @apply text-white bg-primary;
+}

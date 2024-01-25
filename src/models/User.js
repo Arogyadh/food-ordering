@@ -24,6 +24,7 @@ const UserSchema = new Schema(
     city: { type: String, default: "" },
     zip: { type: String, default: "" },
     country: { type: String, default: "" },
+    admin: { type: Boolean, default: false },
   },
   { timestamps: true }
 );
