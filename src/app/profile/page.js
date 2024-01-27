@@ -1,8 +1,7 @@
 "use client";
 
 import { useSession } from "next-auth/react";
-import Image from "next/image";
-
+import EditableImage from "@/components/layout/EditableImage";
 import { redirect } from "next/navigation";
 import { use, useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
@@ -65,36 +64,6 @@ export default function ProfilePage() {
     });
   }
 
-  async function handleFileChange(ev) {
-    const files = ev?.target?.files;
-    if (files?.length === 1) {
-      const data = new FormData();
-      data.set("file", files[0]);
-
-      const uploadingPromise = new Promise(async (resolve, reject) => {
-        const response = await fetch("/api/upload", {
-          method: "POST",
-          body: data,
-        });
-
-        if (response.ok) {
-          const link = await response.json();
-          setImage(link);
-          resolve();
-          console.log("Uploaded Successfully.");
-        } else {
-          reject();
-          console.log("Upload Failed.");
-        }
-      });
-      await toast.promise(uploadingPromise, {
-        loading: "Uploading...",
-        success: <b>Image uploaded!</b>,
-        error: <b>Could not upload.</b>,
-      });
-    }
-  }
-
   if (status === "loading" || profileFetched === false) {
     return "Loading...";
   }
@@ -110,27 +79,7 @@ export default function ProfilePage() {
         <div className="flex gap-4">
           <div>
             <div className=" rounded-md relative max-w-[100px]">
-              {image && (
-                <Image
-                  className="rounded-md w-full h-full mb-2 border-black hover:border-[1px] "
-                  src={image}
-                  alt="profile picture"
-                  width={250}
-                  height={250}
-                />
-              )}
-
-              <label>
-                <input
-                  type="file"
-                  className="hidden"
-                  accept="image/*"
-                  onChange={handleFileChange}
-                />
-                <span className="block border border-gray-300 cursor-pointer hover:bg-gray-200 text-center rounded-lg p-2">
-                  Edit
-                </span>
-              </label>
+              <EditableImage link={image} setLink={setImage} />
             </div>
           </div>
           <form className="grow" onSubmit={handleProfileInfoUpdate}>
