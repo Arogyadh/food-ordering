@@ -84,7 +84,6 @@ export const authOptions = {
   adapter: MongoDBAdapter(clientPromise),
   callbacks: {
     async session(session, user) {
-      console.log("Session created:", session);
       return session;
     },
   },

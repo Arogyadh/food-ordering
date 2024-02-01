@@ -1,16 +1,22 @@
 "use client";
-import EditableImage from "@/components/layout/EditableImage";
+import Right from "@/components/icons/Right";
 import UserTabs from "@/components/layout/UserTabs";
 import { useProfile } from "@/components/UseProfile";
-import { React, useState } from "react";
-import { toast } from "react-hot-toast";
+import Image from "next/image";
+import Link from "next/link";
+import { React, useEffect, useState } from "react";
 
 export default function MenuItemsPage() {
   const { status, isAdmin } = useProfile();
-  const [image, setImage] = useState("");
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [basePrice, setBasePrice] = useState("");
+  const [menuItems, setMenuItems] = useState([]);
+
+  useEffect(() => {
+    fetch("/api/menu-items").then((res) => {
+      res.json().then((menuItems) => {
+        setMenuItems(menuItems);
+      });
+    });
+  }, []);
 
   if (status === "loading" || isAdmin === null) {
     return "Loading...";
@@ -19,58 +25,38 @@ export default function MenuItemsPage() {
   if (isAdmin === false) {
     return "Not an admin.";
   }
-  async function handleMenuItemSubmit(e) {
-    e.preventDefault();
-    const data = { image, name, description, basePrice };
-    const savingPromise = new Promise(async (resolve, reject) => {
-      const response = await fetch("/api/menu-items", {
-        method: "POST",
-        body: JSON.stringify(data),
-        headers: { "Content-Type": "application/json" },
-      });
-      if (response.ok) {
-        resolve();
-      } else reject();
-    });
-
-    await toast.promise(savingPromise, {
-      loading: "Saving...",
-      success: <b>Item Saved!</b>,
-      error: <b>Could not save.</b>,
-    });
-  }
 
   return (
-    <section className="mt-8">
+    <section className="mt-8 max-w-md mx-auto">
       <UserTabs isAdmin={isAdmin} />
-      <form onSubmit={handleMenuItemSubmit} className="mt-8 max-w-md mx-auto">
-        <div className="flex items-start gap-4">
-          <div className=" rounded-md max-w-[200px] max-h-[100px]">
-            <EditableImage link={image} setLink={setImage} />
-          </div>
-          <div className="grow">
-            <label>Item Name</label>
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            />
-            <label>Description</label>
-            <input
-              type="text"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-            />
-            /<label>Base Price</label>
-            <input
-              type="text"
-              value={basePrice}
-              onChange={(e) => setBasePrice(e.target.value)}
-            />
-            <button type="submit">Save</button>
-          </div>
+      <Link href="/menu-items/new" className="button flex">
+        <span>Add New Menu Item</span>
+        <Right />
+      </Link>
+      <div>
+        <h2 className="mt-8 text-sm text-gray-500">Edit menu:</h2>
+        <div className="grid grid-cols-3 gap-2">
+          {menuItems?.length > 0 &&
+            menuItems.map((menuItem, index) => (
+              <Link
+                href={"/menu-items/edit/" + menuItem._id}
+                key={index}
+                className="bg-gray-200 rounded-xl p-4"
+              >
+                <div className="relative flex justify-center">
+                  <Image
+                    className="rounded-md"
+                    src={menuItem.image}
+                    alt={menuItem.name}
+                    width={200}
+                    height={200}
+                  />
+                </div>
+                <div className="text-center">{menuItem.name}</div>
+              </Link>
+            ))}
         </div>
-      </form>
+      </div>
     </section>
   );
 }

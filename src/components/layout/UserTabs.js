@@ -3,7 +3,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 export default function UserTabs({ isAdmin }) {
   const path = usePathname();
-  console.log(path);
+  // console.log(path);
   return (
     <div className="flex tabs gap-2 justify-center mb-8">
       <Link className={path === "/profile" ? "active" : ""} href={"/profile"}>
@@ -18,7 +18,7 @@ export default function UserTabs({ isAdmin }) {
             Categories
           </Link>
           <Link
-            className={path === "/menu-items" ? "active" : ""}
+            className={path.includes("menu-items") ? "active" : ""}
             href={"/menu-items"}
           >
             Menu Items
