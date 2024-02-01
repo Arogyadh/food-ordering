@@ -1,8 +1,33 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+
 import EditableImage from "./EditableImage";
 import MenuItemPriceProps from "@/components/layout/MenuItemPriceProps";
+import toast from "react-hot-toast";
 
-export default function MenuItemForm({ onSubmit, menuItem }) {
+async function DeleteMenuItem(_id, router) {
+  const deleteMenuItemPromise = new Promise(async (resolve, reject) => {
+    const response = await fetch("/api/menu-items", {
+      method: "DELETE",
+      body: JSON.stringify({ _id }),
+      headers: { "Content-Type": "application/json" },
+    });
+    if (response.ok) {
+      resolve();
+    } else {
+      reject();
+    }
+    console.log(response);
+  });
+  await toast.promise(deleteMenuItemPromise, {
+    loading: "Deleting...",
+    success: <b>Menu Item Deleted!</b>,
+    error: <b>Could not delete.</b>,
+  });
+
+  router.push("/menu-items");
+}
+
+export default function MenuItemForm({ router, onSubmit, menuItem }) {
   const [image, setImage] = useState(menuItem?.image || "");
   const [name, setName] = useState(menuItem?.name || "");
   const [description, setDescription] = useState(menuItem?.description || "");
@@ -11,6 +36,17 @@ export default function MenuItemForm({ onSubmit, menuItem }) {
   const [extraIngridientPrices, setExtraIngridientPrices] = useState(
     menuItem?.extraIngridientPrices || []
   );
+
+  useEffect(() => {
+    if (menuItem) {
+      setImage(menuItem.image || "");
+      setName(menuItem.name || "");
+      setDescription(menuItem.description || "");
+      setBasePrice(menuItem.basePrice || "");
+      setSizes(menuItem.sizes || []);
+      setExtraIngridientPrices(menuItem.extraIngridientPrices || []);
+    }
+  }, [menuItem]);
 
   return (
     <form
@@ -62,6 +98,16 @@ export default function MenuItemForm({ onSubmit, menuItem }) {
             setProps={setExtraIngridientPrices}
           />
           <button type="submit">Save</button>
+
+          <button
+            onClick={() => {
+              DeleteMenuItem(menuItem._id, router);
+            }}
+            className="mt-2"
+            type="button"
+          >
+            Delete Menu Item
+          </button>
         </div>
       </div>
     </form>

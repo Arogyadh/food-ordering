@@ -65,6 +65,29 @@ export default function CategoriesPage() {
     });
   }
 
+  async function handleDeleteCategory(_id) {
+    const deletePromise = new Promise(async (resolve, reject) => {
+      const response = await fetch("/api/categories", {
+        body: JSON.stringify({ _id }),
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+      });
+
+      if (response.ok) {
+        resolve();
+      } else {
+        reject();
+      }
+    });
+    await toast.promise(deletePromise, {
+      loading: "Deleting Category...",
+      success: <b>Category Deleted...</b>,
+      error: <b>Error.</b>,
+    });
+    fetchCatgories();
+    setSelectedCategory(null);
+  }
+
   return (
     <section className="mt-8 max-w-md mx-auto">
       <UserTabs isAdmin={isAdmin} />
@@ -82,26 +105,53 @@ export default function CategoriesPage() {
               onChange={(e) => setCategoryName(e.target.value)}
             />
           </div>
-          <div className="pb-[10px]">
-            <button type="submit">{selectedCategory ? "Edit" : "+"}</button>
+          <div className="pb-[10px] flex gap-2">
+            <button type="submit">{selectedCategory ? "Update" : "+"}</button>
+            {selectedCategory && (
+              <button
+                onClick={() => {
+                  setSelectedCategory(null);
+                  setCategoryName("");
+                }}
+                type="button"
+              >
+                Cancel
+              </button>
+            )}
           </div>
         </div>
       </form>
       <div>
         <span className="flex text-gray-500 justify-center p-4">
-          Edit category:
+          Existing categories:
         </span>
         {categories?.length > 0 &&
-          categories.map((category) => (
-            <button
-              onClick={() => {
-                setSelectedCategory(category);
-                setCategoryName(category.name);
-              }}
-              className="bg-gray-200 rounded-xl p-2 mb-2 cursor-pointer"
+          categories.map((category, index) => (
+            <div
+              key={index}
+              className="bg-gray-200 rounded-xl p-2 mb-2 flex  items-center"
             >
-              <span>{category.name}</span>
-            </button>
+              <div className="text-gray-700  grow">{category.name}</div>
+              <div className="flex gap-1">
+                <button
+                  onClick={() => {
+                    setSelectedCategory(category);
+                    setCategoryName(category.name);
+                  }}
+                  type="button"
+                >
+                  Edit
+                </button>
+                <button
+                  onClick={() => {
+                    handleDeleteCategory(category._id);
+                  }}
+                  type="button"
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
           ))}
       </div>
     </section>

@@ -7,9 +7,11 @@ import { useState } from "react";
 import { toast } from "react-hot-toast";
 import Left from "@/components/icons/Left";
 import MenuItemForm from "@/components/layout/MenuItemForm";
+import { useRouter } from "next/navigation";
 
 export default function NewMenuItemPage() {
   const { status, isAdmin } = useProfile();
+  const router = useRouter();
 
   if (status === "loading" || isAdmin === null) {
     return "Loading...";
@@ -37,6 +39,8 @@ export default function NewMenuItemPage() {
       success: <b>Item Saved!</b>,
       error: <b>Could not save.</b>,
     });
+
+    router.push("/menu-items");
   }
   return (
     <section className="mt-8">

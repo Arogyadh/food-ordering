@@ -5,15 +5,14 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import Left from "@/components/icons/Left";
-import { redirect, useParams } from "next/navigation";
+import { redirect, useParams, useRouter } from "next/navigation";
 import MenuItemForm from "@/components/layout/MenuItemForm";
 
 export default function EditMenuItemPage() {
+  const router = useRouter();
   const { id } = useParams();
   const { status, isAdmin } = useProfile();
   const [menuItem, setMenuItem] = useState(null);
-
-  const [redirectToItems, setRedirectToItems] = useState(false);
 
   useEffect(() => {
     fetch("/api/menu-items").then((res) => {
@@ -50,12 +49,8 @@ export default function EditMenuItemPage() {
       success: <b>Item Updated!</b>,
       error: <b>Could not update!.</b>,
     });
+  }
 
-    setRedirectToItems(true);
-  }
-  if (redirectToItems) {
-    return redirect("/menu-items");
-  }
   return (
     <section className="mt-8">
       <UserTabs isAdmin={isAdmin} />
@@ -67,7 +62,11 @@ export default function EditMenuItemPage() {
           Show all menu items
         </Link>
       </div>
-      <MenuItemForm menuItem={menuItem} onSubmit={handleMenuItemSubmit} />
+      <MenuItemForm
+        router={router}
+        menuItem={menuItem}
+        onSubmit={handleMenuItemSubmit}
+      />
     </section>
   );
 }
