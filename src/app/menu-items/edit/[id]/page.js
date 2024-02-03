@@ -49,12 +49,13 @@ export default function EditMenuItemPage() {
       success: <b>Item Updated!</b>,
       error: <b>Could not update!.</b>,
     });
+    router.push("/menu-items");
   }
 
   return (
     <section className="mt-8">
       <UserTabs isAdmin={isAdmin} />
-      <div className="mt-8 max-w-md mx-auto">
+      <div className="mt-8 max-w-2xl mx-auto">
         <Link href={"/menu-items"} className="button">
           <span>
             <Left />

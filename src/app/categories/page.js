@@ -4,6 +4,7 @@ import { useProfile } from "@/components/UseProfile";
 import { set } from "mongoose";
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
+import DeleteButton from "../../components/DeleteButton";
 
 export default function CategoriesPage() {
   const [categoryName, setCategoryName] = useState("");
@@ -72,8 +73,9 @@ export default function CategoriesPage() {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
       });
+      const result = await response.json();
 
-      if (response.ok) {
+      if (result.success) {
         resolve();
       } else {
         reject();
@@ -89,7 +91,7 @@ export default function CategoriesPage() {
   }
 
   return (
-    <section className="mt-8 max-w-md mx-auto">
+    <section className="mt-8 max-w-2xl mx-auto">
       <UserTabs isAdmin={isAdmin} />
       <form className="mt-8" onSubmit={handleCategorySubmit}>
         <div className="flex gap-2 items-end ">
@@ -132,24 +134,26 @@ export default function CategoriesPage() {
               className="bg-gray-200 rounded-xl p-2 mb-2 flex  items-center"
             >
               <div className="text-gray-700  grow">{category.name}</div>
-              <div className="flex gap-1">
-                <button
-                  onClick={() => {
-                    setSelectedCategory(category);
-                    setCategoryName(category.name);
-                  }}
-                  type="button"
-                >
-                  Edit
-                </button>
-                <button
-                  onClick={() => {
-                    handleDeleteCategory(category._id);
-                  }}
-                  type="button"
-                >
-                  Delete
-                </button>
+              <div className="flex gap-1 items-center">
+                <div>
+                  <button
+                    onClick={() => {
+                      setSelectedCategory(category);
+                      setCategoryName(category.name);
+                    }}
+                    type="button"
+                  >
+                    Edit
+                  </button>
+                </div>
+                <div className="mb-2">
+                  <DeleteButton
+                    label="Delete"
+                    onDelete={() => {
+                      handleDeleteCategory(category._id);
+                    }}
+                  />
+                </div>
               </div>
             </div>
           ))}

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-
+import DeleteButton from "@/components/DeleteButton";
 import EditableImage from "./EditableImage";
 import MenuItemPriceProps from "@/components/layout/MenuItemPriceProps";
 import toast from "react-hot-toast";
@@ -16,7 +16,6 @@ async function DeleteMenuItem(_id, router) {
     } else {
       reject();
     }
-    console.log(response);
   });
   await toast.promise(deleteMenuItemPromise, {
     loading: "Deleting...",
@@ -36,8 +35,15 @@ export default function MenuItemForm({ router, onSubmit, menuItem }) {
   const [extraIngridientPrices, setExtraIngridientPrices] = useState(
     menuItem?.extraIngridientPrices || []
   );
+  const [category, setCategory] = useState(menuItem?.category || "");
+  const [categories, setCategories] = useState([]);
 
   useEffect(() => {
+    fetch("/api/categories")
+      .then((res) => res.json())
+      .then((categories) => {
+        setCategories(categories);
+      });
     if (menuItem) {
       setImage(menuItem.image || "");
       setName(menuItem.name || "");
@@ -45,6 +51,7 @@ export default function MenuItemForm({ router, onSubmit, menuItem }) {
       setBasePrice(menuItem.basePrice || "");
       setSizes(menuItem.sizes || []);
       setExtraIngridientPrices(menuItem.extraIngridientPrices || []);
+      setCategory(menuItem.category || "");
     }
   }, [menuItem]);
 
@@ -58,9 +65,10 @@ export default function MenuItemForm({ router, onSubmit, menuItem }) {
           basePrice,
           sizes,
           extraIngridientPrices,
+          category,
         })
       }
-      className="mt-8 max-w-md mx-auto"
+      className="mt-8 max-w-2xl mx-auto"
     >
       <div className="flex items-start gap-4">
         <div className=" rounded-md max-w-[200px] max-h-[100px]">
@@ -79,6 +87,21 @@ export default function MenuItemForm({ router, onSubmit, menuItem }) {
             value={description}
             onChange={(e) => setDescription(e.target.value)}
           />
+          <label>Category</label>
+          <select
+            value={category}
+            onChange={(ev) => setCategory(ev.target.value)}
+          >
+            <option value="" disabled>
+              Select a category
+            </option>
+            {categories?.length > 0 &&
+              categories.map((category) => (
+                <option key={category._id} value={category._id}>
+                  {category.name}
+                </option>
+              ))}
+          </select>
           <label>Base Price</label>
           <input
             type="text"
@@ -99,15 +122,12 @@ export default function MenuItemForm({ router, onSubmit, menuItem }) {
           />
           <button type="submit">Save</button>
 
-          <button
-            onClick={() => {
+          <DeleteButton
+            label="Delete Menu Item"
+            onDelete={() => {
               DeleteMenuItem(menuItem._id, router);
             }}
-            className="mt-2"
-            type="button"
-          >
-            Delete Menu Item
-          </button>
+          />
         </div>
       </div>
     </form>

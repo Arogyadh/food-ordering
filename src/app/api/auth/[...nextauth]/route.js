@@ -113,7 +113,7 @@ export const authOptions = {
         }
         const passwordOk = user && bcrypt.compareSync(password, user.password);
         if (passwordOk) {
-          console.log({ email, password, user });
+          // console.log({ email, password, user });
           return { ...user };
         } else {
           console.error("Password incorrect");

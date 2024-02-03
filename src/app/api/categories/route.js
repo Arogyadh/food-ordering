@@ -1,4 +1,5 @@
 import { Category } from "@/models/Category";
+import { MenuItems } from "@/models/MenuItems";
 import mongoose from "mongoose";
 
 export async function POST(req) {
@@ -23,6 +24,19 @@ export async function GET() {
 export async function DELETE(req) {
   mongoose.connect(process.env.MONGO_URL);
   const { _id } = await req.json();
+  const menuItemsWithCategory = await MenuItems.find({ category: _id });
+  // console.log(menuItemsWithCategory);
+
+  if (menuItemsWithCategory.length > 0) {
+    // If there are menu items, do not delete the category
+    return Response.json({
+      success: false,
+      message: "Category has associated menu items.",
+    });
+  }
   await Category.deleteOne({ _id });
-  return Response.json(true);
+  return Response.json({
+    success: true,
+    message: "Category has been deleted.",
+  });
 }
