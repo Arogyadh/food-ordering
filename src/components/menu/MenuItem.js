@@ -1,13 +1,10 @@
-import React from "react";
+import React, { useContext } from "react";
+import { CartContext } from "@/components/AppContext";
 
-const MenuItem = ({
-  image,
-  name,
-  description,
-  basePrice,
-  sizes,
-  extraIngridientPrices,
-}) => {
+const MenuItem = (Item) => {
+  const { image, name, description, basePrice, sizes, extraIngridientPrices } =
+    Item;
+  const { addToCart } = useContext(CartContext);
   return (
     <div className="bg-gray-200 p-4 rounded-lg text-center hover:bg-white hover:shadow-md hover:shadow-black/25 transition-all">
       <div className="text-center">
@@ -16,7 +13,10 @@ const MenuItem = ({
 
       <h4 className="text-xl font-semibold my-3">{name}</h4>
       <p className="text-sm text-gray-500 line-clamp-3">{description}</p>
-      <button className="mt-4 bg-primary rounded-full text-white px-8 py-2">
+      <button
+        className=" mt-4 bg-primary rounded-full text-white px-8 py-2"
+        onClick={() => addToCart(Item)}
+      >
         Rs. {basePrice}
       </button>
     </div>

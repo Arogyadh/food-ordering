@@ -1,12 +1,14 @@
 "use client";
 import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
-import React from "react";
+import React, { useContext } from "react";
+import { CartContext } from "@/components/AppContext";
 
 const Header = () => {
   const session = useSession();
   // console.log(session);
   const status = session.status;
+  const { cartProducts } = useContext(CartContext);
   const userData = session?.data?.user;
 
   // console.log(status);
@@ -56,6 +58,8 @@ const Header = () => {
             </Link>
           </>
         )}
+
+        <Link href={"/cart"}>Cart ({cartProducts.length})</Link>
       </nav>
     </header>
   );
