@@ -44,6 +44,7 @@ export default function UserForm({ session, user, onSave }) {
             city,
             country,
             zip,
+            admin,
           })
         }
       >
