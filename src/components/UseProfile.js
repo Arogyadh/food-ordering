@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 export function useProfile() {
   const session = useSession();
   const status = session.status;
+  const data = session.data;
   const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
@@ -14,5 +15,5 @@ export function useProfile() {
     }
   }, [status, session]);
 
-  return { status, isAdmin };
+  return { status, isAdmin, data };
 }

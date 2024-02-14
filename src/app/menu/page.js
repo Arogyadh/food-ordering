@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { useEffect } from "react";
 import SectionHeaders from "@/components/layout/SectionHeaders";
-import MenuItem from "@/components/menu/menuItem";
+import MenuItem from "@/components/menu/MenuItem";
 
 export default function MenuPage() {
   const [categories, setCategories] = useState([]);

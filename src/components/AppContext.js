@@ -2,8 +2,22 @@
 
 import { SessionProvider } from "next-auth/react";
 import { createContext, useEffect, useState } from "react";
+import { toast } from "react-hot-toast";
 
 export const CartContext = createContext({});
+
+export function cartProductPrice(cartProduct) {
+  let price = cartProduct.basePrice;
+  if (cartProduct.size) {
+    price += cartProduct.size.price;
+  }
+  if (cartProduct.extras?.length > 0) {
+    for (const extra of cartProduct.extras) {
+      price += extra.price;
+    }
+  }
+  return price;
+}
 
 export function AppProvider({ children }) {
   const [cartProducts, setCartProducts] = useState([]);
@@ -14,7 +28,24 @@ export function AppProvider({ children }) {
     if (localStorage && localStorage.getItem("cartProducts")) {
       setCartProducts(JSON.parse(localStorage.getItem("cartProducts")));
     }
-  }, []);
+  }, [localStorage]);
+
+  function clearCart() {
+    setCartProducts([]);
+    saveCartProductsToLocalStorage([]);
+  }
+
+  function removeFromCart(indexToRemove) {
+    setCartProducts((prevCartProducts) => {
+      const newCartProducts = prevCartProducts.filter(
+        (v, index) => index !== indexToRemove
+      );
+      saveCartProductsToLocalStorage(newCartProducts);
+
+      return newCartProducts;
+    });
+    toast.success("Product removed.");
+  }
 
   function saveCartProductsToLocalStorage(cartProducts) {
     if (localStorage) {
@@ -37,6 +68,8 @@ export function AppProvider({ children }) {
           cartProducts,
           setCartProducts,
           addToCart,
+          clearCart,
+          removeFromCart,
         }}
       >
         {children}
