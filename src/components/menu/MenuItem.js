@@ -4,7 +4,7 @@ import { toast } from "react-hot-toast";
 import MenuItemTile from "@/components/menu/MenuItemTile";
 import Image from "next/image";
 import { set } from "mongoose";
-import FlyingButton from "react-flying-item";
+// import FlyingButton from "react-flying-item";
 
 const MenuItem = (Item) => {
   const { image, name, description, basePrice, sizes, extraIngridientPrices } =
@@ -15,20 +15,20 @@ const MenuItem = (Item) => {
   const [selectedExtras, setSelectedExtras] = useState([]);
 
   async function handleAddToCartButtonClick() {
-    console.log("adding to cart");
     const hasOptions = sizes?.length > 0 || extraIngridientPrices?.length > 0;
     if (hasOptions && !showPopup) {
       setShowPopup(true);
       return;
     }
     if (showPopup) {
-      addToCart(Item, selectedSize, selectedExtras);
       await new Promise((resolve) => setTimeout(resolve, 1000));
+      addToCart(Item, selectedSize, selectedExtras);
+      setShowPopup(false);
+      toast.success("Item added to cart", { position: "top-right" });
     } else {
       addToCart(Item);
+      toast.success("Item added to cart", { position: "top-right" });
     }
-    setShowPopup(false);
-    toast.success("Item added to cart", { position: "top-right" });
   }
 
   function handleExtraThingClick(ev, extraThing) {
@@ -118,14 +118,15 @@ const MenuItem = (Item) => {
                   ))}
                 </div>
               )}
-              <FlyingButton targetTop={"5%"} targetLeft={"95%"} src={image}>
-                <div
-                  className="primary sticky bottom-2"
+              <div className="flying-button-parent">
+                <button
+                  type="button"
+                  className="primary sticky bottom-2 "
                   onClick={handleAddToCartButtonClick}
                 >
                   Add to cart ${selectedPrice}
-                </div>
-              </FlyingButton>
+                </button>
+              </div>
               <button className="mt-2" onClick={() => setShowPopup(false)}>
                 Cancel
               </button>

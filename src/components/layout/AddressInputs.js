@@ -1,20 +1,26 @@
-export default function AddressInputs({addressProps,setAddressProps}) {
-    const {phone,streetAddress, city , zip , country} = addressProps;
+export default function AddressInputs({
+  addressProps,
+  setAddressProps,
+  disabled = false,
+}) {
+  const { phone, streetAddress, city, zip, country } = addressProps;
   return (
     <>
       <label>Phone</label>
       <input
         type="tel"
         placeholder="Phone Number"
-        onChange={(ev) => setAddressProps("phone",ev.target.value)}
+        disabled={disabled}
+        onChange={(ev) => setAddressProps("phone", ev.target.value)}
         value={phone}
       />
       <label>Street Address</label>
       <input
         type="text"
         placeholder="Street Adress"
+        disabled={disabled}
         value={streetAddress}
-        onChange={(ev) => setAddressProps("streetAddress",ev.target.value)}
+        onChange={(ev) => setAddressProps("streetAddress", ev.target.value)}
       />
 
       <div className="grid grid-cols-2 gap-4">
@@ -23,8 +29,9 @@ export default function AddressInputs({addressProps,setAddressProps}) {
           <input
             type="text"
             placeholder="City"
+            disabled={disabled}
             value={city}
-            onChange={(ev) => setAddressProps("city",ev.target.value)}
+            onChange={(ev) => setAddressProps("city", ev.target.value)}
           />
         </div>
         <div>
@@ -32,8 +39,9 @@ export default function AddressInputs({addressProps,setAddressProps}) {
           <input
             type="text"
             placeholder="Zip/Postal Code"
+            disabled={disabled}
             value={zip}
-            onChange={(ev) => setAddressProps("zip",ev.target.value)}
+            onChange={(ev) => setAddressProps("zip", ev.target.value)}
           />
         </div>
       </div>
@@ -41,8 +49,9 @@ export default function AddressInputs({addressProps,setAddressProps}) {
       <input
         type="text"
         placeholder="Country"
+        disabled={disabled}
         value={country}
-        onChange={(ev) => setAddressProps("country",ev.target.value)}
+        onChange={(ev) => setAddressProps("country", ev.target.value)}
       />
     </>
   );

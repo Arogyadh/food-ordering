@@ -1,17 +1,26 @@
 "use client";
 import { CartContext, cartProductPrice } from "@/components/AppContext";
 import SectionHeaders from "@/components/layout/SectionHeaders";
-import Image from "next/image";
+
 import { useContext, useEffect, useState } from "react";
-import Trash from "@/components/icons/Trash";
+
 import AddressInputs from "../../components/layout/AddressInputs";
 import { useProfile } from "../../components/UseProfile";
+import { toast } from "react-hot-toast";
+import CartProduct from "@/components/menu/CartProduct";
 
 export default function CartPage() {
-  const { cartProducts, clearCart, removeFromCart } = useContext(CartContext);
+  const { cartProducts, removeFromCart } = useContext(CartContext);
   const [address, setAddress] = useState({});
   const { data: profileData } = useProfile();
 
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      if (window.location.href.includes("cancelled=1")) {
+        toast.error("Payment cancelled");
+      }
+    }
+  }, []);
   useEffect(() => {
     if (profileData?.user) {
       const { phone, streetAddress, city, country, zip } = profileData?.user;
@@ -25,9 +34,42 @@ export default function CartPage() {
       return { ...prevAddress, [propName]: value };
     });
   }
-  let total = 0;
+  let subtotal = 0;
   for (const p of cartProducts) {
-    total += cartProductPrice(p);
+    subtotal += cartProductPrice(p);
+  }
+
+  async function proceedToCheckout(ev) {
+    ev.preventDefault();
+    const promise = new Promise((resolve, reject) => {
+      fetch("/api/checkout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ address, cartProducts }),
+      }).then(async (response) => {
+        if (response.ok) {
+          resolve();
+          window.location = await response.json();
+        } else {
+          reject();
+        }
+      });
+    });
+    await toast.promise(promise, {
+      loading: "Processing...",
+      success: "Redirecting to payment",
+      error: "Checkout failed",
+    });
+  }
+  if (cartProducts?.length === 0) {
+    return (
+      <section className="mt-8 text-center">
+        <SectionHeaders mainHeader={"Cart"} />
+        <p className="text-gray-600 my-4">Your Shopping Cart is empty :{"("}</p>
+      </section>
+    );
   }
 
   return (
@@ -43,65 +85,40 @@ export default function CartPage() {
           )}
           {cartProducts?.length > 0 &&
             cartProducts.map((product, index) => (
-              <div
-                key={index}
-                className="grid grid-cols-4 gap-3 mb-2 border-b text-start items-center py-2"
-              >
-                <div className="w-24">
-                  <Image
-                    src={product.image}
-                    alt={product.name}
-                    width={240}
-                    height={240}
-                    className="rounded-lg"
-                  />
-                </div>
-
-                <div>
-                  <h3 className="font-semibold">{product.name}</h3>
-                  {product?.size && (
-                    <span className="text-sm">Size: {product.size.name}</span>
-                  )}
-                  {product?.extras.length > 0 && (
-                    <div className="text-sm text-gray-500">
-                      {product.extras.map((extra, index) => (
-                        <span key={index} className="flex text-start">
-                          {extra.name} Rs.{extra.price}
-                        </span>
-                      ))}
-                    </div>
-                  )}
-                </div>
-                <div className="text-center text-lg font-semibold">
-                  Rs.{cartProductPrice(product)}
-                </div>
-                <div>
-                  <button
-                    type="button"
-                    onClick={() => removeFromCart(index)}
-                    className="p-2"
-                  >
-                    <Trash />
-                  </button>
-                </div>
-              </div>
+              <CartProduct
+                product={product}
+                onRemove={removeFromCart}
+                index={index}
+              />
             ))}
-          <div className="py-4 text-right text-gray-500 font-bold">
+          <div className="py-2 text-right text-gray-500 font-bold">
             Total :
             <span className="text-lg ml-2 text-black items-center">
-              Rs.{total}
+              Rs.{subtotal}
+            </span>
+          </div>
+          <div className=" text-right text-gray-500 font-bold">
+            Delivery Charges :
+            <span className="text-lg ml-2 text-black items-center">
+              Rs. 100
+            </span>
+          </div>
+          <div className=" text-right text-gray-500 font-bold">
+            Total :
+            <span className="text-lg ml-2 text-black items-center">
+              Rs. {subtotal + 100}
             </span>
           </div>
         </div>
 
         <div className="bg-gray-100 p-4 rounded-xl">
           <h2>Checkout</h2>
-          <form>
+          <form onSubmit={proceedToCheckout}>
             <AddressInputs
               addressProps={address}
               setAddressProps={handleAddressChange}
             />
-            <button type="submit">Pay Rs.{total}</button>
+            <button type="submit">Pay Rs.{subtotal + 100}</button>
           </form>
         </div>
       </div>

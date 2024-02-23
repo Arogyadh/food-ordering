@@ -63,9 +63,11 @@ const Header = () => {
         <Link href={"/cart"}>
           <div className="relative items-center">
             <ShoppingCart />
-            <span className="absolute -top-2 -right-2 text-xs bg-primary text-white p-1 rounded-full leading-3">
-              {cartProducts.length}
-            </span>
+            {cartProducts.length > 0 && (
+              <span className="absolute -top-2 -right-2 text-xs bg-primary text-white p-1 rounded-full leading-3">
+                {cartProducts.length}
+              </span>
+            )}
           </div>
         </Link>
       </nav>
