@@ -2,9 +2,9 @@ import mongoose from "mongoose";
 import { Order } from "../../../models/Order";
 const stripe = require("stripe")(process.env.STRIPE_SK);
 import { getServerSession } from "next-auth/next";
-
+import { authOptions } from "@/libs/AuthOptions";
 import { MenuItems } from "../../../models/MenuItems";
-import { authOptions } from "../auth/[...nextauth]/route";
+
 
 export async function POST(req) {
   mongoose.connect(process.env.MONGO_URL);

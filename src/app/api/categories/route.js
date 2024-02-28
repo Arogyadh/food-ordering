@@ -1,7 +1,7 @@
 import { Category } from "@/models/Category";
 import { MenuItems } from "@/models/MenuItems";
 import mongoose from "mongoose";
-import { isAdmin } from "../auth/[...nextauth]/route";
+import { isAdmin } from "@/libs/isAdmin";
 
 export async function POST(req) {
   const body = await req.json();

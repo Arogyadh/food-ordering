@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import { getServerSession } from "next-auth";
-import { authOptions, isAdmin } from "@/app/api/auth/[...nextauth]/route.js";
+import { authOptions } from "@/libs/AuthOptions";
+import { isAdmin } from "@/libs/isAdmin";
 
 import { Order } from "@/models/Order.js";
 
