@@ -78,7 +78,7 @@ export default function CartPage() {
         <SectionHeaders mainHeader={"Cart"} />
       </div>
 
-      <div className="grid grid-cols-2 gap-12 mt-8 ">
+      <div className="grid md:grid-cols-2 gap-12 mt-8 ">
         <div>
           {cartProducts?.length === 0 && (
             <div>No Products in your shopping cart</div>
@@ -86,6 +86,7 @@ export default function CartPage() {
           {cartProducts?.length > 0 &&
             cartProducts.map((product, index) => (
               <CartProduct
+                key={index}
                 product={product}
                 onRemove={removeFromCart}
                 index={index}

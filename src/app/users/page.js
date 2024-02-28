@@ -30,8 +30,11 @@ export default function UsersPage() {
       <div className="font-bold">
         {users?.length > 0 &&
           users.map((user, index) => (
-            <div className="bg-gray-100 rounded-lg mb-2 p-2 px-4 flex items-center gap-4">
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4 grow">
+            <div
+              key={index}
+              className="bg-gray-100 rounded-lg mb-2 p-2 px-4 flex  items-center gap-4"
+            >
+              <div className="flex flex-col md:grid md:grid-cols-2 gap-2 md:gap-4 grow">
                 <div className="text-gray-900">
                   {!!user.name && <span>{user.name}</span>}
                   {!user.name && <span className="italic">No Name</span>}

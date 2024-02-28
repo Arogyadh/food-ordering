@@ -12,14 +12,14 @@ export default function AddressInputs({
         placeholder="Phone Number"
         disabled={disabled}
         onChange={(ev) => setAddressProps("phone", ev.target.value)}
-        value={phone}
+        value={phone || ""}
       />
       <label>Street Address</label>
       <input
         type="text"
         placeholder="Street Adress"
         disabled={disabled}
-        value={streetAddress}
+        value={streetAddress || ""}
         onChange={(ev) => setAddressProps("streetAddress", ev.target.value)}
       />
 
@@ -30,7 +30,7 @@ export default function AddressInputs({
             type="text"
             placeholder="City"
             disabled={disabled}
-            value={city}
+            value={city || ""}
             onChange={(ev) => setAddressProps("city", ev.target.value)}
           />
         </div>
@@ -40,7 +40,7 @@ export default function AddressInputs({
             type="text"
             placeholder="Zip/Postal Code"
             disabled={disabled}
-            value={zip}
+            value={zip || ""}
             onChange={(ev) => setAddressProps("zip", ev.target.value)}
           />
         </div>
@@ -50,7 +50,7 @@ export default function AddressInputs({
         type="text"
         placeholder="Country"
         disabled={disabled}
-        value={country}
+        value={country || ""}
         onChange={(ev) => setAddressProps("country", ev.target.value)}
       />
     </>

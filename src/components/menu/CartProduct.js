@@ -4,7 +4,7 @@ import Trash from "@/components/icons/Trash";
 
 export default function CartProduct({ product, onRemove, index }) {
   return (
-    <div className="grid grid-cols-4 gap-3 mb-2 border-b text-start items-center py-2">
+    <div className="flex flex-col md:grid md:grid-cols-4 gap-3 mb-2 border-b text-start items-center py-2">
       <div className="w-24">
         <Image
           src={product.image}
@@ -33,7 +33,7 @@ export default function CartProduct({ product, onRemove, index }) {
       <div className="text-center text-lg font-semibold">
         Rs.{cartProductPrice(product)}
       </div>
-      {onRemove && (
+      {!!onRemove && (
         <div>
           <button type="button" onClick={() => onRemove(index)} className="p-2">
             <Trash />

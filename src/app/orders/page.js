@@ -14,7 +14,6 @@ export default function OrdersPage() {
     setLoadingOrders(true);
     fetch("/api/orders").then((res) => {
       res.json().then((order) => {
-        console.log(order);
         setOrders(order.reverse());
       });
     });
@@ -35,7 +34,10 @@ export default function OrdersPage() {
         {loadingOrders && <div>Loading Orders...</div>}
         {orders?.length > 0 &&
           orders.map((order, index) => (
-            <div className="bg-gray-100 mb-2 p-4 rounded-lg flex flex-col md:grid grid-cols-3 items-center">
+            <div
+              key={index}
+              className="bg-gray-100 mb-2 p-4 rounded-lg flex flex-col md:grid grid-cols-3 items-center"
+            >
               <div>
                 <div>{order.userEmail}</div>
               </div>

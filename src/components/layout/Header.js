@@ -1,9 +1,51 @@
 "use client";
 import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { CartContext } from "@/components/AppContext";
 import ShoppingCart from "@/components/icons/ShoppingCart";
+import Hamburger from "@/components/icons/Hamburger";
+
+function AuthLinks({ status, userData }) {
+  if (status === "authenticated") {
+    return (
+      <>
+        <Link
+          href={"/profile"}
+          className="whitespace-nowrap px-4 py-2 rounded-full"
+        >
+          Hello,{" "}
+          {userData &&
+            (userData.name?.split(" ")[0] ||
+              userData.email?.split("@")[0] ||
+              User)}
+        </Link>
+        <button
+          onClick={() => {
+            signOut();
+          }}
+          className="bg-primary rounded-full text-white px-8 py-2"
+        >
+          Logout
+        </button>
+      </>
+    );
+  }
+
+  if (status !== "authenticated") {
+    return (
+      <>
+        <Link href={"/register"}>Register</Link>
+        <Link
+          href={"/login"}
+          className="bg-primary rounded-full text-white px-8 py-2"
+        >
+          Login
+        </Link>
+      </>
+    );
+  }
+}
 
 const Header = () => {
   const session = useSession();
@@ -11,66 +53,73 @@ const Header = () => {
   const status = session.status;
   const { cartProducts } = useContext(CartContext);
   const userData = session?.data?.user;
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
   // console.log(status);
 
   return (
-    <header className="flex items-center justify-between">
-      <nav className="flex gap-8 items-center text-gray-500 font-semibold">
-        <Link href="" className="text-primary font-semibold text-2xl">
+    <header>
+      <div className="flex md:hidden justify-between">
+        <Link href="/" className="text-primary font-semibold text-2xl">
           ST PIZZA
         </Link>
-        <Link href="/">Home</Link>
-        <Link href="/menu">Menu</Link>
-        <Link href="/#about">About</Link>
-        <Link href="/#contact">Contact</Link>
-      </nav>
-      <nav className="flex gap-4 items-center text-gray-500 font-semibold">
-        {status === "authenticated" && (
-          <>
-            <Link
-              href={"/profile"}
-              className="whitespace-nowrap px-4 py-2 rounded-full"
-            >
-              Hello,{" "}
-              {userData &&
-                (userData.name?.split(" ")[0] ||
-                  userData.email?.split("@")[0] ||
-                  User)}
-            </Link>
-            <button
-              onClick={() => {
-                signOut();
-              }}
-              className="bg-primary rounded-full text-white px-8 py-2"
-            >
-              Logout
-            </button>
-          </>
-        )}
-        {status !== "authenticated" && (
-          <>
-            <Link href={"/register"}>Register</Link>
-            <Link
-              href={"/login"}
-              className="bg-primary rounded-full text-white px-8 py-2"
-            >
-              Login
-            </Link>
-          </>
-        )}
+        <div className="flex gap-4 items-center">
+          <Link href={"/cart"}>
+            <div className="relative items-center">
+              <ShoppingCart />
+              {cartProducts.length > 0 && (
+                <span className="absolute -top-2 -right-2 text-xs bg-primary text-white p-1 rounded-full leading-3">
+                  {cartProducts.length}
+                </span>
+              )}
+            </div>
+          </Link>
+          <button
+            onClick={() => setMobileNavOpen(!mobileNavOpen)}
+            className="p-1 "
+          >
+            <Hamburger />
+          </button>
+        </div>
+      </div>
+      {mobileNavOpen && (
+        <div
+          onClick={() => setMobileNavOpen(false)}
+          className="md:hidden p-4 bg-gray-300 rounded-xl mt-2 flex flex-col items-center"
+        >
+          <Link href="/">Home</Link>
+          <Link href="/menu">Menu</Link>
+          <Link href="/#about">About</Link>
+          <Link href="/#contact">Contact</Link>
+          <AuthLinks status={status} userData={userData} />
+        </div>
+      )}
 
-        <Link href={"/cart"}>
-          <div className="relative items-center">
-            <ShoppingCart />
-            {cartProducts.length > 0 && (
-              <span className="absolute -top-2 -right-2 text-xs bg-primary text-white p-1 rounded-full leading-3">
-                {cartProducts.length}
-              </span>
-            )}
-          </div>
-        </Link>
-      </nav>
+      <div className="hidden  md:flex items-center justify-between">
+        <nav className="flex gap-8 items-center text-gray-500 font-semibold">
+          <Link href="/" className="text-primary font-semibold text-2xl">
+            ST PIZZA
+          </Link>
+          <Link href="/">Home</Link>
+          <Link href="/menu">Menu</Link>
+          <Link href="/#about">About</Link>
+          <Link href="/#contact">Contact</Link>
+        </nav>
+        <nav className="flex gap-4 items-center text-gray-500 font-semibold">
+          <AuthLinks status={status} userData={userData} />
+
+          <Link href={"/cart"}>
+            <div className="relative items-center">
+              <ShoppingCart />
+              {cartProducts.length > 0 && (
+                <span className="absolute -top-2 -right-2 text-xs bg-primary text-white p-1 rounded-full leading-3">
+                  {cartProducts.length}
+                </span>
+              )}
+            </div>
+          </Link>
+        </nav>
+      </div>
     </header>
   );
 };
