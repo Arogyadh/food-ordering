@@ -3,8 +3,6 @@ import { CartContext } from "@/components/AppContext";
 import { toast } from "react-hot-toast";
 import MenuItemTile from "@/components/menu/MenuItemTile";
 import Image from "next/image";
-import { set } from "mongoose";
-// import FlyingButton from "react-flying-item";
 
 const MenuItem = (Item) => {
   const { image, name, description, basePrice, sizes, extraIngridientPrices } =

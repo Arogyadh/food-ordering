@@ -7,9 +7,14 @@ export default function MenuItemTile({ onAddToCart, ...item }) {
     sizes?.length > 0 || extraIngridientPrices?.length > 0;
 
   return (
-    <div className="bg-gray-200 p-4 rounded-lg text-center hover:bg-white hover:shadow-md hover:shadow-black/25 transition-all">
+    <div
+      style={{
+        background: "linear-gradient(180deg,#f9ea94  0%,#f9f9f9  100%)",
+      }}
+      className=" p-4 rounded-lg text-center hover:bg-white hover:shadow-md hover:shadow-black/25 transition-all"
+    >
       <div className="text-center">
-        <img src={image} alt="pizza" className=" max-h-20 block mx-auto" />
+        <img src={image} alt={name} className=" max-h-[100px] block mx-auto" />
       </div>
 
       <h4 className="text-xl font-semibold my-3">{name}</h4>

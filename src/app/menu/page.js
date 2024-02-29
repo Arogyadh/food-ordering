@@ -5,6 +5,7 @@ import SectionHeaders from "@/components/layout/SectionHeaders";
 import MenuItem from "@/components/menu/MenuItem";
 
 export default function MenuPage() {
+  const [loading, setLoading] = useState(true);
   const [categories, setCategories] = useState([]);
   const [menuItems, setMenuItems] = useState([]);
   useEffect(() => {
@@ -14,9 +15,13 @@ export default function MenuPage() {
     fetch("/api/menu-items").then((res) =>
       res.json().then((menuItems) => setMenuItems(menuItems))
     );
+    setLoading(false);
   }, []);
   return (
-    <section className="mt-8">
+    <section className="mt-16">
+      {loading && (
+        <div className="text-center my-12">Loading menu items... </div>
+      )}
       {categories?.length > 0 &&
         categories.map((category) => (
           <div key={category._id}>

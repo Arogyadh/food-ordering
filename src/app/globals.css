@@ -2,9 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
-section.hero {
-  @apply grid;
-  grid-template-columns: 0.4fr 0.6fr;
+body {
+  background: linear-gradient(180deg, #f9f9f9 0%, #f9ea94 100%);
+  margin: 0;
+  min-height: 100vh;
+}
+
+span.hover-over {
+  @apply hover:after:absolute hover:after:bottom-0 hover:after:left-0 hover:after:w-full hover:after:h-0.5 hover:after:bg-primary;
 }
 select,
 input[type="email"],
@@ -49,4 +54,18 @@ div.tabs > *.active {
 
 .flying-button-parent button {
   @apply border-primary bg-primary text-white rounded-full;
+}
+
+/* custom scrollbar */
+body::-webkit-scrollbar {
+  width: 1em;
+}
+
+body::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+}
+
+body::-webkit-scrollbar-thumb {
+  background-color: darkgrey;
+  outline: 1px solid slategrey;
 }

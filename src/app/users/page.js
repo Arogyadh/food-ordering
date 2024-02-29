@@ -35,8 +35,11 @@ export default function UsersPage() {
               className="bg-gray-100 rounded-lg mb-2 p-2 px-4 flex  items-center gap-4"
             >
               <div className="flex flex-col md:grid md:grid-cols-2 gap-2 md:gap-4 grow">
-                <div className="text-gray-900">
+                <div className="text-gray-900 flex items-center gap-2">
                   {!!user.name && <span>{user.name}</span>}
+                  {!!user.admin && (
+                    <span className=" bg-green-500 rounded-full h-2 w-2  items-center justify-center text-white"></span>
+                  )}
                   {!user.name && <span className="italic">No Name</span>}
                 </div>
                 <span className="text-gray-500">{user.email}</span>

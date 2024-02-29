@@ -112,7 +112,7 @@ export default function CartPage() {
           </div>
         </div>
 
-        <div className="bg-gray-100 p-4 rounded-xl">
+        <div className=" p-4 rounded-xl">
           <h2>Checkout</h2>
           <form onSubmit={proceedToCheckout}>
             <AddressInputs

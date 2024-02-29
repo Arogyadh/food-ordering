@@ -7,6 +7,7 @@ import { use, useEffect } from "react";
 import { useState } from "react";
 
 export default function OrdersPage() {
+  let numbers = -6;
   const [orders, setOrders] = useState([]);
   const [loadingOrders, setLoadingOrders] = useState(true);
   const { status, isAdmin } = useProfile();
@@ -14,14 +15,14 @@ export default function OrdersPage() {
     setLoadingOrders(true);
     fetch("/api/orders").then((res) => {
       res.json().then((order) => {
-        setOrders(order.reverse());
+        setOrders(order.slice(numbers).reverse());
       });
     });
     setLoadingOrders(false);
   }
   useEffect(() => {
     fetchOrders();
-  }, []);
+  }, [numbers]);
 
   if (status === "loading") return <div>Loading...</div>;
   if (status === "unauthenticated")
@@ -69,6 +70,18 @@ export default function OrdersPage() {
               </div>
             </div>
           ))}
+
+        <div>
+          <button
+            className="button bg-gray-300 hover:bg-gray-200"
+            onClick={() => {
+              numbers = numbers - 6;
+              fetchOrders();
+            }}
+          >
+            Show more
+          </button>
+        </div>
       </div>
     </section>
   );

@@ -2,40 +2,45 @@ import Image from "next/image";
 import React from "react";
 import Right from "../icons/Right";
 import DoubleRight from "../icons/DoubleRight";
+import Link from "next/link";
 
 const Hero = () => {
   return (
-    <section className="hero mt-8">
-      <div className="py-12">
+    <section className="grid md:grid-cols-2 md:mt-16 mt-8">
+      <div className="md:py-24 py-8">
         <h1 className="text-4xl font-semibold leading-normal">
-          Everything <br />
-          is better <br />
-          with a <span className="text-primary">Pizza</span>
+          Try <span className="text-primary">something new</span> <br />
+          every day at <br />
+          <span className="text-primary">The Culinary Corner</span>
         </h1>
         <p className="my-6 text-gray-500">
-          One Pizza a day keeps depression away, a simple yet delicious joy in
-          life.
+          From familiar comfort to exotic delights, our diverse menu has
+          something for everyone.
         </p>
+
         <div className="flex gap-4">
-          <button className="bg-primary flex gap-2 text-white px-4 py-2 rounded-full">
-            Order Now
-            <Right />
-          </button>
+          <Link
+            href="/menu"
+            className=" bg-primary flex gap-2 button text-white px-4 py-2 rounded-full"
+          >
+            <span className="flex text-white">
+              Order Now
+              <Right />
+            </span>
+          </Link>
           <button className="flex gap-2 items-center text-gray-600 font-semibold">
             Learn more
             <DoubleRight />
           </button>
         </div>
       </div>
-      <div className="relative hidden md:block">
+      <div className="hidden md:block relative w-full h-full">
         <Image
-          src={"/pizza.jpg"}
-          alt={"pizza"}
+          className=""
+          src={"/pizzer.png"}
+          alt="pizza"
           layout="fill"
-          objectFit="contain"
-          objectPosition="center"
-          priority={true}
-          quality={100}
+          style={{ transform: "scaleX(-1)" }}
         />
       </div>
     </section>

@@ -5,16 +5,16 @@ import React, { useContext, useState } from "react";
 import { CartContext } from "@/components/AppContext";
 import ShoppingCart from "@/components/icons/ShoppingCart";
 import Hamburger from "@/components/icons/Hamburger";
-
+import UserCircle from "@/components/icons/UserCircle";
 function AuthLinks({ status, userData }) {
   if (status === "authenticated") {
     return (
       <>
         <Link
           href={"/profile"}
-          className="whitespace-nowrap px-4 py-2 rounded-full"
+          className="whitespace-nowrap flex px-4 py-2 rounded-full"
         >
-          Hello,{" "}
+          <UserCircle />
           {userData &&
             (userData.name?.split(" ")[0] ||
               userData.email?.split("@")[0] ||
@@ -35,7 +35,12 @@ function AuthLinks({ status, userData }) {
   if (status !== "authenticated") {
     return (
       <>
-        <Link href={"/register"}>Register</Link>
+        <Link
+          className="px-4 py-2 border border-gray-500 rounded-full"
+          href={"/register"}
+        >
+          Register
+        </Link>
         <Link
           href={"/login"}
           className="bg-primary rounded-full text-white px-8 py-2"
@@ -49,19 +54,17 @@ function AuthLinks({ status, userData }) {
 
 const Header = () => {
   const session = useSession();
-  // console.log(session);
+
   const status = session.status;
   const { cartProducts } = useContext(CartContext);
   const userData = session?.data?.user;
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
-  // console.log(status);
-
   return (
     <header>
       <div className="flex md:hidden justify-between">
         <Link href="/" className="text-primary font-semibold text-2xl">
-          ST PIZZA
+          TC<sup className="text-sm">2</sup>
         </Link>
         <div className="flex gap-4 items-center">
           <Link href={"/cart"}>
@@ -85,12 +88,24 @@ const Header = () => {
       {mobileNavOpen && (
         <div
           onClick={() => setMobileNavOpen(false)}
-          className="md:hidden p-4 bg-gray-300 rounded-xl mt-2 flex flex-col items-center"
+          className="md:hidden p-4 gap-4  rounded-xl mt-6 flex flex-col items-center"
+          style={{
+            background: "linear-gradient(180deg, #f9f9f9 0%, #f9ea94 100%)",
+          }}
         >
-          <Link href="/">Home</Link>
-          <Link href="/menu">Menu</Link>
-          <Link href="/#about">About</Link>
-          <Link href="/#contact">Contact</Link>
+          <Link className="relative" href="/">
+            <span className="hover-over">Home</span>
+          </Link>
+          <Link className="relative" href="/menu">
+            <span className="hover-over">Menu</span>
+          </Link>
+          <Link className="relative" href="/#about">
+            <span className="hover-over">About</span>
+          </Link>
+          <Link className="relative" href="/#contact">
+            <span className="hover-over">Contact</span>
+          </Link>
+
           <AuthLinks status={status} userData={userData} />
         </div>
       )}
@@ -98,7 +113,7 @@ const Header = () => {
       <div className="hidden  md:flex items-center justify-between">
         <nav className="flex gap-8 items-center text-gray-500 font-semibold">
           <Link href="/" className="text-primary font-semibold text-2xl">
-            ST PIZZA
+            TC<sup className="text-sm">2</sup>
           </Link>
           <Link href="/">Home</Link>
           <Link href="/menu">Menu</Link>
