@@ -28,10 +28,13 @@ const Hero = () => {
               <Right />
             </span>
           </Link>
-          <button className="flex gap-2 items-center text-gray-600 font-semibold">
+          <Link
+            href={"/#about"}
+            className=" button flex gap-2 items-center text-gray-600 font-semibold"
+          >
             Learn more
             <DoubleRight />
-          </button>
+          </Link>
         </div>
       </div>
       <div className="hidden md:block relative w-full h-full">

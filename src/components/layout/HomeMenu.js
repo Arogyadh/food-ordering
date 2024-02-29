@@ -1,13 +1,43 @@
 "use client";
-import Image from "next/image";
+
 import MenuItem from "../menu/MenuItem";
 import SectionHeaders from "./SectionHeaders";
 import { useEffect, useState } from "react";
-import { set } from "mongoose";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import Slider from "react-slick";
 
 export default function HomeMenu() {
   const [loading, setLoading] = useState(true);
   const [bestSellers, setBestSellers] = useState([]);
+  const [slidesToShow, setSlidesToShow] = useState(3);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth <= 768) {
+        setSlidesToShow(1);
+      } else {
+        setSlidesToShow(3);
+      }
+    };
+
+    handleResize();
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  const settings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: slidesToShow,
+    slidesToScroll: 1,
+  };
+
   useEffect(() => {
     fetch("/api/menu-items").then((response) => {
       response.json().then((menuItems) => {
@@ -25,9 +55,11 @@ export default function HomeMenu() {
         />
       </div>
       {loading && <div className="text-center ">Loading...</div>}
-      <div className="grid grid-cols-3 gap-4">
-        {bestSellers?.length > 0 &&
-          bestSellers.map((item) => <MenuItem key={item._id} {...item} />)}
+      <div className=" w-full">
+        <Slider {...settings}>
+          {bestSellers?.length > 0 &&
+            bestSellers.map((item) => <MenuItem key={item._id} {...item} />)}
+        </Slider>
       </div>
     </section>
   );
