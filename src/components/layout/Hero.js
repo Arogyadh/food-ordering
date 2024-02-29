@@ -1,3 +1,4 @@
+"use client";
 import Image from "next/image";
 import React from "react";
 import Right from "../icons/Right";
@@ -39,8 +40,13 @@ const Hero = () => {
       </div>
       <div className="hidden md:block relative w-full h-full">
         <Image
-          className=""
-          src={"/pizzer.png"}
+          onError={(e) => {
+            e.target.onerror = null;
+            e.target.src = "/pizzer.png";
+          }}
+          src={
+            "https://arogya-ordering.s3.ap-southeast-1.amazonaws.com/pizzer.png"
+          }
           alt="pizza"
           layout="fill"
           style={{ transform: "scaleX(-1)" }}
