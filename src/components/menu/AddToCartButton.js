@@ -18,7 +18,7 @@ export default function AddToCartButton({
         className=" mt-4 bg-primary rounded-full text-white px-8 py-2"
         onClick={onClick}
       >
-        <span className="text-md">From Rs.{basePrice} </span>
+        <span className="text-sm">From Rs.{basePrice} </span>
       </button>
     </>
   );

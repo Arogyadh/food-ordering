@@ -18,7 +18,7 @@ export default function MenuItemTile({ onAddToCart, ...item }) {
   }, []);
 
   return (
-    <div className="p-[2.5px] bg-black rounded-sm">
+    <div className="flex p-[2.5px] bg-black rounded-sm">
       <div
         style={{
           background: "linear-gradient(180deg,#f9ea94  0%,#f9f9f9  100%)",
