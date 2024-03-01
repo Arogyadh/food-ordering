@@ -65,8 +65,7 @@ export default function HomeMenu() {
         <Slider {...settings}>
           {bestSellers?.length > 0 &&
             bestSellers.map((item) => (
-              <div onClick={handleCarouselClick}>
-                {" "}
+              <div key={item._id} onClick={handleCarouselClick}>
                 <MenuItem key={item._id} {...item} />
               </div>
             ))}
