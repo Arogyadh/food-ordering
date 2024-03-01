@@ -5,7 +5,7 @@ import { authOptions } from "@/libs/AuthOptions";
 export async function isAdmin() {
   const session = await getServerSession(authOptions);
   const userEmail = session?.user?.email;
-  console.log(session);
+
   if (!userEmail) return false;
   const user = await User.findOne({ email: userEmail });
   if (!user) {

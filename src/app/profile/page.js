@@ -3,7 +3,7 @@ import UserForm from "@/components/layout/UserForm";
 import { useSession } from "next-auth/react";
 import EditableImage from "@/components/layout/EditableImage";
 import { redirect } from "next/navigation";
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import UserTabs from "@/components/layout/UserTabs";
 
@@ -13,7 +13,7 @@ export default function ProfilePage() {
   const [user, setUser] = useState(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [profileFetched, setProfileFetched] = useState(false);
-  const { status } = session;
+  const status = session?.status;
 
   useEffect(() => {
     if (status === "authenticated") {
@@ -52,7 +52,7 @@ export default function ProfilePage() {
     return "Loading...";
   }
   if (status === "unauthenticated") {
-    return redirect("/login");
+    return redirect("/");
   }
 
   return (

@@ -13,6 +13,15 @@ export async function GET(req) {
   const admin = await isAdmin();
   const url = new URL(req.url);
   const _id = url.searchParams.get("_id");
+  const email = url.searchParams.get("email");
+
+  if (email) {
+    if (admin) {
+      return Response.json(await Order.find({ userEmail: email }));
+    } else {
+      return Response.json(await Order.find({ userEmail }));
+    }
+  }
 
   if (_id) {
     return Response.json(await Order.findById(_id));
@@ -24,4 +33,18 @@ export async function GET(req) {
   if (userEmail) {
     return Response.json(await Order.find({ userEmail }));
   }
+}
+
+export async function PUT(req) {
+  mongoose.connect(process.env.MONGO_URL);
+
+  const session = await getServerSession(authOptions);
+  const userEmail = session?.user?.email;
+  const admin = await isAdmin();
+
+  const body = await req.json();
+
+  await Order.findByIdAndUpdate(body._id, body);
+
+  return Response.json(true);
 }

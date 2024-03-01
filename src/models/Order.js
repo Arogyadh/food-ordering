@@ -9,6 +9,7 @@ const OrderSchema = new Schema(
     zip: String,
     country: String,
     cartProducts: Object,
+    status: String,
     paid: { type: Boolean, default: false },
   },
   { timestamps: true }

@@ -10,6 +10,7 @@ export default function MenuPage() {
   const [menuItems, setMenuItems] = useState([]);
   const [activeCategory, setActiveCategory] = useState("Pizza");
   useEffect(() => {
+    setLoading(true);
     fetch("/api/categories").then((res) =>
       res.json().then((categories) => setCategories(categories))
     );
@@ -20,7 +21,7 @@ export default function MenuPage() {
   }, []);
 
   function handleActiveCategory(name) {
-    console.log(name);
+    // console.log(name);
     setActiveCategory(name);
   }
   return (

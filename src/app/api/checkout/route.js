@@ -13,7 +13,7 @@ export async function POST(req) {
   const session = await getServerSession(authOptions);
 
   const userEmail = session?.user?.email;
-  console.log(userEmail);
+  // console.log(userEmail);
 
   const orderDoc = await Order.create({
     userEmail,

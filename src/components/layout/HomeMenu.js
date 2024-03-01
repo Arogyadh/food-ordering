@@ -32,13 +32,13 @@ export default function HomeMenu() {
 
   function handleCarouselClick() {
     window.location.href = "/menu";
-    console.log("clicked");
+
     return false;
   }
 
   const settings = {
     dots: true,
-    infinite: false,
+    infinite: true,
     speed: 500,
     slidesToShow: slidesToShow,
     slidesToScroll: 1,

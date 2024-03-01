@@ -5,12 +5,25 @@ import UserTabs from "@/components/layout/UserTabs";
 import Link from "next/link";
 import { use, useEffect } from "react";
 import { useState } from "react";
+import { toast } from "react-hot-toast";
 
 export default function OrdersPage() {
   let numbers = -6;
   const [orders, setOrders] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
   const [loadingOrders, setLoadingOrders] = useState(true);
   const { status, isAdmin } = useProfile();
+
+  async function handleSearch(e) {
+    console.log(e.target.value);
+    setSearchQuery(e.target.value);
+    await fetch("/api/orders?email=" + e.target.value).then((res) => {
+      res.json().then((order) => {
+        setOrders(order.slice(numbers).reverse());
+      });
+    });
+  }
+
   function fetchOrders() {
     setLoadingOrders(true);
     fetch("/api/orders").then((res) => {
@@ -24,6 +37,36 @@ export default function OrdersPage() {
     fetchOrders();
   }, [numbers]);
 
+  async function setChangeStatus(grabData) {
+    const promise = new Promise(async (resolve, reject) => {
+      const { e, ...order } = grabData;
+      console.log(e.target.value);
+      console.log(order._id);
+      const response = await fetch("/api/orders", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          _id: order._id,
+          status: e.target.value,
+        }),
+      });
+      if (response.ok) {
+        resolve();
+        fetchOrders();
+      } else {
+        reject();
+      }
+
+      await toast.promise(promise, {
+        pending: "Updating...",
+        success: "Updated",
+        error: "Failed :(",
+      });
+    });
+  }
+
   if (status === "loading") return <div>Loading...</div>;
   if (status === "unauthenticated")
     return <div>Please login to view your orders</div>;
@@ -33,14 +76,38 @@ export default function OrdersPage() {
       <UserTabs isAdmin={isAdmin} />
       <div className="mt-8">
         {loadingOrders && <div>Loading Orders...</div>}
+
+        <div className=" bg-gray-200 my-2 rounded-xl">
+          <input
+            type="text"
+            placeholder="Search"
+            value={searchQuery}
+            onChange={(e) => handleSearch(e)}
+          />
+        </div>
         {orders?.length > 0 &&
           orders.map((order, index) => (
             <div
               key={index}
-              className="bg-gray-100 mb-2 p-4 rounded-lg flex flex-col md:grid grid-cols-3 items-center"
+              className="bg-gray-200 mb-2 p-4 rounded-lg gap-8 flex flex-col md:grid grid-cols-3 items-center"
             >
-              <div>
+              <div className="flex flex-col gap-2 text-center items-center">
                 <div>{order.userEmail}</div>
+                <div className="text-xs text-gray-500">
+                  status :{order.status || " "}
+                </div>
+                {isAdmin && order.paid && (
+                  <select
+                    onChange={(e) => setChangeStatus({ e, ...order })}
+                    className="text-xs w-[100px]"
+                    value={order.status}
+                  >
+                    <option value="queue">Queue</option>
+                    <option value="cooking">Cooking</option>
+                    <option value="delivering">Delivering</option>
+                    <option value="delivered">Delivered</option>
+                  </select>
+                )}
               </div>
               <div className="text-gray-500 text-sm">
                 {order.cartProducts?.map((p) => p.name).join(", ")}
