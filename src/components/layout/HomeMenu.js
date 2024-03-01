@@ -30,9 +30,15 @@ export default function HomeMenu() {
     };
   }, []);
 
+  function handleCarouselClick() {
+    window.location.href = "/menu";
+    console.log("clicked");
+    return false;
+  }
+
   const settings = {
     dots: true,
-    infinite: true,
+    infinite: false,
     speed: 500,
     slidesToShow: slidesToShow,
     slidesToScroll: 1,
@@ -48,7 +54,7 @@ export default function HomeMenu() {
   }, []);
   return (
     <section>
-      <div className="text-center mt-20 mb-8">
+      <div className="text-center  mt-20 mb-8">
         <SectionHeaders
           subHeader={"Check Out"}
           mainHeader={"Our New Additions"}
@@ -58,7 +64,12 @@ export default function HomeMenu() {
       <div className=" w-full">
         <Slider {...settings}>
           {bestSellers?.length > 0 &&
-            bestSellers.map((item) => <MenuItem key={item._id} {...item} />)}
+            bestSellers.map((item) => (
+              <div onClick={handleCarouselClick}>
+                {" "}
+                <MenuItem key={item._id} {...item} />
+              </div>
+            ))}
         </Slider>
       </div>
     </section>

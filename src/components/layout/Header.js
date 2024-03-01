@@ -1,11 +1,12 @@
 "use client";
-import { signOut, useSession } from "next-auth/react";
+import { signIn, signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import React, { useContext, useState } from "react";
 import { CartContext } from "@/components/AppContext";
 import ShoppingCart from "@/components/icons/ShoppingCart";
 import Hamburger from "@/components/icons/Hamburger";
 import UserCircle from "@/components/icons/UserCircle";
+import Image from "next/image";
 function AuthLinks({ status, userData }) {
   if (status === "authenticated") {
     return (
@@ -35,18 +36,14 @@ function AuthLinks({ status, userData }) {
   if (status !== "authenticated") {
     return (
       <>
-        <Link
-          className="px-4 py-2 border border-gray-500 rounded-full"
-          href={"/register"}
+        <button
+          type="button"
+          onClick={() => signIn("google", { callbackUrl: "/" })}
+          className="p-2 rounded-full justify-center items-center"
         >
-          Register
-        </Link>
-        <Link
-          href={"/login"}
-          className="bg-primary rounded-full text-white px-8 py-2"
-        >
+          <Image src={"/google.png"} alt="google" width={30} height={30} />
           Login
-        </Link>
+        </button>
       </>
     );
   }

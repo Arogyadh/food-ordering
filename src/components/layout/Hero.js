@@ -4,15 +4,30 @@ import React from "react";
 import Right from "../icons/Right";
 import DoubleRight from "../icons/DoubleRight";
 import Link from "next/link";
+import Typewriter from "typewriter-effect";
 
 const Hero = () => {
   return (
     <section className="grid md:grid-cols-2 md:mt-16 mt-8">
-      <div className="md:py-24 py-8">
-        <h1 className="text-4xl font-semibold leading-normal">
-          Try <span className="text-primary">something new</span> <br />
-          every day at <br />
-          <span className="text-primary">The Culinary Corner</span>
+      <div className="md:py-12 py-8">
+        <h1 className="text-4xl font-semibold leading-normal text-center">
+          <span className="text-primary">
+            <Typewriter
+              onInit={(typewriter) => {
+                typewriter
+                  .changeDelay("50")
+                  .typeString("The Culinary Corner,<br/> Try Something New")
+                  .callFunction(() => {
+                    console.log("String typed out!");
+                  })
+                  .pauseFor(2000)
+                  .changeDeleteSpeed(0.8)
+                  .deleteChars(19)
+
+                  .start();
+              }}
+            />
+          </span>
         </h1>
         <p className="my-6 text-gray-500">
           From familiar comfort to exotic delights, our diverse menu has
