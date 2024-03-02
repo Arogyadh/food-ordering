@@ -27,10 +27,27 @@ export async function POST(req) {
         { _id: orderId },
         { $set: { paid: true, status: "queue" } }
       );
+      const order = await Order.findById(orderId);
+      const productNames = order.cartProducts
+        .map((cartProduct) => {
+          // Check if the cartProduct size and extras are defined
+          const size = cartProduct.size?.name;
+          const extras = cartProduct.extras
+            ?.map((extra) => extra.name)
+            .join(", ");
+
+          // Render product name, size, and extras only if they are defined
+          return `<h2>${cartProduct.name}</h2>
+                ${size ? `<p>${size}</p>` : ""}
+                ${extras ? `<p>Extra-${extras}</p>` : ""}
+                <br />`;
+        })
+        .join("");
+
       await sendEmail(
         email,
         "Order Confirmed-Queue",
-        "<p>Hello, your order has been confirmed and will be on its way soon!</p>"
+        `<h1>Hello,</h1><p>Your order has been confirmed and will be on its way soon!<span>${productNames}</span></p>`
       );
     }
   }
