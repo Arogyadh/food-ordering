@@ -1,9 +1,8 @@
 "use client";
 import { useProfile } from "@/components/UseProfile";
-import SectionHeaders from "@/components/layout/SectionHeaders";
 import UserTabs from "@/components/layout/UserTabs";
 import Link from "next/link";
-import { use, useEffect } from "react";
+import { useEffect } from "react";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
 
@@ -12,7 +11,7 @@ export default function OrdersPage() {
   const [orders, setOrders] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [loadingOrders, setLoadingOrders] = useState(true);
-  const { status, isAdmin } = useProfile();
+  const { session, status, isAdmin } = useProfile();
 
   async function handleSearch(e) {
     console.log(e.target.value);
@@ -76,15 +75,18 @@ export default function OrdersPage() {
       <UserTabs isAdmin={isAdmin} />
       <div className="mt-8">
         {loadingOrders && <div>Loading Orders...</div>}
-
-        <div className=" bg-gray-200 my-2 rounded-xl">
-          <input
-            type="text"
-            placeholder="Search"
-            value={searchQuery}
-            onChange={(e) => handleSearch(e)}
-          />
-        </div>
+        {/* Search Bar */}
+        {isAdmin && (
+          <div className=" bg-gray-200 my-2 rounded-xl">
+            <input
+              type="text"
+              placeholder="Search"
+              value={searchQuery}
+              onChange={(e) => handleSearch(e)}
+            />
+          </div>
+        )}
+        {/* Orders  */}
         {orders?.length > 0 &&
           orders.map((order, index) => (
             <div
@@ -137,7 +139,7 @@ export default function OrdersPage() {
               </div>
             </div>
           ))}
-
+        {/* Show more */}
         <div>
           <button
             className="button bg-gray-300 hover:bg-gray-200"

@@ -53,65 +53,10 @@ export default function OrderPage() {
       {order && (
         <>
           <div className="flex justify-center items-center text-lg">
+            {order.status === "queue" && <OrderStatus status={status} />}
             {order.status === "cooking" && <OrderStatus status={status} />}
-            {order.status === "delivering" && (
-              // <div className="text-gray-500">
-              //   <div className="flex items-center gap-5">
-              //     <div className="h-10 w-10">
-              //       <Image
-              //         style={{ transform: "scaleX(-1)" }}
-              //         src={
-              //           "https://arogya-ordering.s3.ap-southeast-1.amazonaws.com/delivering.png"
-              //         }
-              //         alt="cooking"
-              //         height={50}
-              //         width={50}
-              //       />
-              //     </div>
-              //     Your order is on its way !
-              //     <div className="h-10 w-10">
-              //       <Image
-              //         src={
-              //           "https://arogya-ordering.s3.ap-southeast-1.amazonaws.com/delivering.png"
-              //         }
-              //         alt="cooking"
-              //         height={50}
-              //         width={50}
-              //       />
-              //     </div>
-              //   </div>
-              // </div>
-              <OrderStatus status={status} />
-            )}
-            {order.status === "delivered" && (
-              // <div className="text-gray-500">
-              //   <div className="flex items-center gap-5">
-              //     <div className="h-10 w-10">
-              //       <Image
-              //         style={{ transform: "scaleX(-1)" }}
-              //         src={
-              //           "https://arogya-ordering.s3.ap-southeast-1.amazonaws.com/delivered.png"
-              //         }
-              //         alt="cooking"
-              //         height={50}
-              //         width={50}
-              //       />
-              //     </div>
-              //     Your order has been delivered !
-              //     <div className="h-10 w-10">
-              //       <Image
-              //         src={
-              //           "https://arogya-ordering.s3.ap-southeast-1.amazonaws.com/delivered.png"
-              //         }
-              //         alt="cooking"
-              //         height={50}
-              //         width={50}
-              //       />
-              //     </div>
-              //   </div>
-              // </div>
-              <OrderStatus status={status} />
-            )}
+            {order.status === "delivering" && <OrderStatus status={status} />}
+            {order.status === "delivered" && <OrderStatus status={status} />}
           </div>
           <div className="grid md:grid-cols-2 gap-4 md:gap-16">
             <div>

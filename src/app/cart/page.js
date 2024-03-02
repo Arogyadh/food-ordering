@@ -13,6 +13,7 @@ export default function CartPage() {
   const { cartProducts, removeFromCart } = useContext(CartContext);
   const [address, setAddress] = useState({});
   const { data: profileData } = useProfile();
+  const { status } = useProfile();
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -24,6 +25,7 @@ export default function CartPage() {
   useEffect(() => {
     if (profileData?.user) {
       const { phone, streetAddress, city, country, zip } = profileData?.user;
+
       const addressFromProfile = { phone, streetAddress, city, country, zip };
       setAddress(addressFromProfile);
     }
@@ -119,7 +121,11 @@ export default function CartPage() {
               addressProps={address}
               setAddressProps={handleAddressChange}
             />
-            <button type="submit">Pay Rs.{subtotal + 100}</button>
+            {status === "authenticated" ? (
+              <button type="submit">Pay Rs.{subtotal + 100}</button>
+            ) : (
+              <button disabled>Login to Pay</button>
+            )}
           </form>
         </div>
       </div>

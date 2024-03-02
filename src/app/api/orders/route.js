@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/libs/AuthOptions";
 import { isAdmin } from "@/libs/isAdmin";
-
+import sendEmail from "@/libs/sendEmail";
 import { Order } from "@/models/Order.js";
 
 export async function GET(req) {
@@ -39,12 +39,19 @@ export async function PUT(req) {
   mongoose.connect(process.env.MONGO_URL);
 
   const session = await getServerSession(authOptions);
-  const userEmail = session?.user?.email;
+
   const admin = await isAdmin();
 
   const body = await req.json();
 
-  await Order.findByIdAndUpdate(body._id, body);
-
-  return Response.json(true);
+  if (admin) {
+    const { userEmail } = await Order.findById(body._id);
+    await Order.findByIdAndUpdate(body._id, body);
+    await sendEmail(
+      userEmail,
+      `Order Status Updated-${body.status}`,
+      "<p>Hello, your order has been confirmed and will be on its way soon!</p>"
+    );
+    return Response.json(true);
+  }
 }

@@ -5,7 +5,6 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/libs/AuthOptions";
 import { MenuItems } from "../../../models/MenuItems";
 
-
 export async function POST(req) {
   mongoose.connect(process.env.MONGO_URL);
   const { cartProducts, address } = await req.json();
@@ -13,7 +12,6 @@ export async function POST(req) {
   const session = await getServerSession(authOptions);
 
   const userEmail = session?.user?.email;
-  // console.log(userEmail);
 
   const orderDoc = await Order.create({
     userEmail,
@@ -65,9 +63,15 @@ export async function POST(req) {
       orderDoc._id.toString() +
       "?clear-cart=1",
     cancel_url: process.env.NEXTAUTH_URL + "cart?cancelled=1",
-    metadata: { orderId: orderDoc._id.toString() },
+    metadata: {
+      orderId: orderDoc._id.toString(),
+      customer_email: userEmail,
+    },
     payment_intent_data: {
-      metadata: { orderId: orderDoc._id.toString() },
+      metadata: {
+        orderId: orderDoc._id.toString(),
+        customer_email: userEmail,
+      },
     },
     shipping_options: [
       {
